@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booth Viewer</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
+        h1 { color: #fc4d50; margin-bottom: 1.5rem; }
+        input[type="text"] { width: 80%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 1rem; font-size: 16px; }
+        button { background-color: #fc4d50; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #d43f42; }
+        .error { color: red; margin-top: 1rem; }
+        .hint { font-size: 0.8rem; color: #666; margin-top: 1rem; text-align: left; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Booth Search Viewer</h1>
+        <form method="POST">
+            <textarea name="urls" rows="6" placeholder="Boothの検索URLを貼り付けてください&#10;（1行に1つURLを入力）" required style="width: 80%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 1rem; font-size: 16px; resize: vertical;"></textarea>
+            <br>
+            <button type="submit">まとめて表示する</button>
+        </form>
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+        <div class="hint">
+            <p>例:</p>
+            <p>https://booth.pm/ja/search/VRChat<br>https://booth.pm/ja/search/3Dモデル</p>
+            <p>※検索結果ページのURLを改行区切りで入力してください。</p>
+        </div>
+    </div>
+</body>
+</html>

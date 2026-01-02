@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>検索結果 - Booth Viewer</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        .back-link { display: inline-block; margin-top: 10px; color: #fc4d50; text-decoration: none; border: 1px solid #fc4d50; padding: 5px 15px; border-radius: 4px; }
+        .back-link:hover { background-color: #fc4d50; color: white; }
+        
+        .error-section { background: #fee; color: #c00; padding: 10px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #fcc; }
+        .error-title { font-weight: bold; margin-bottom: 5px; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 98%; margin: 0 auto; }
+        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; border: 1px solid #eee; position: relative; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.15); z-index: 10; }
+        .card-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background-color: #eee; }
+        .card-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-title { font-size: 14px; font-weight: bold; margin: 0 0 10px; line-height: 1.4; color: #333; }
+        .card-shop { font-size: 12px; color: #888; margin-bottom: 5px; }
+        .card-price { font-size: 16px; font-weight: bold; color: #fc4d50; text-align: right; }
+        a.card-link { text-decoration: none; color: inherit; height: 100%; display: flex; flex-direction: column; }
+        
+        .source-badge { 
+            font-size: 10px; color: #999; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        .source-badge a { color: #999; text-decoration: none; }
+        .source-badge a:hover { text-decoration: underline; color: #666; }
+
+        .no-results { text-align: center; font-size: 18px; color: #666; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>検索結果: {{ count }}件</h1>
+        <a href="/" class="back-link">新しい検索をする</a>
+    </header>
+
+    {% if errors %}
+    <div class="error-section">
+        <div class="error-title">一部のURLでエラーが発生しました:</div>
+        <ul>
+        {% for err in errors %}
+            <li>{{ err }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if products %}
+    <div class="grid">
+        {% for item in products %}
+        <div class="card">
+            <a href="{{ item.link }}" target="_blank" class="card-link" rel="noopener noreferrer">
+                {% if item.image %}
+                <img src="{{ item.image }}" alt="{{ item.title }}" class="card-img" loading="lazy">
+                {% else %}
+                <div class="card-img" style="display: flex; align-items: center; justify-content: center; color: #ccc;">No Image</div>
+                {% endif %}
+                <div class="card-content">
+                    <div>
+                        <div class="card-shop">{{ item.shop }}</div>
+                        <h3 class="card-title">{{ item.title }}</h3>
+                    </div>
+                    <div>
+                        <div class="card-price">{{ item.price }}</div>
+                        <div class="source-badge" title="検索元: {{ item.source_url }}">
+                            <a href="{{ item.source_url }}" target="_blank" onclick="event.stopPropagation();">検索元ページへ</a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-results">
+        商品が見つかりませんでした。
+    </div>
+    {% endif %}
+
+</body>
+</html>
