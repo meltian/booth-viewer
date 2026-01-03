@@ -36,7 +36,11 @@
 <body>
     <header>
         <h1>検索結果: {{ count }}件</h1>
+        {% if not is_static %}
         <a href="/" class="back-link">新しい検索をする</a>
+        {% else %}
+        <p style="font-size: 0.9rem; color: #666;">Last Updated by GitHub Actions</p>
+        {% endif %}
     </header>
 
     {% if errors %}

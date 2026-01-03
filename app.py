@@ -106,8 +106,7 @@ def index():
         # Split by lines and remove empty lines
         urls = [line.strip() for line in urls_text.splitlines() if line.strip()]
         
-        all_products = []
-        total_count = 0
+        unique_products = {}
         errors = []
 
         for url in urls:
@@ -116,13 +115,21 @@ def index():
                 errors.append(f"{url}: {data['error']}")
                 continue
             
-            # Add source URL to each product and extend the main list
+            # Add source URL to each product and add to unique dict
             products = data.get("products", [])
             for p in products:
                 p["source_url"] = url
-            
-            all_products.extend(products)
-            total_count += len(products)
+                
+                # Use ID for deduplication, fallback to link if ID is 0
+                key = p['id'] if p['id'] != 0 else p['link']
+                
+                # Only add if not already present (keeps the first occurrence)
+                if key not in unique_products:
+                    unique_products[key] = p
+        
+        # Convert values to list
+        all_products = list(unique_products.values())
+        total_count = len(all_products)
         
         # Sort all products by ID descending (newest first)
         all_products.sort(key=lambda x: x['id'], reverse=True)
