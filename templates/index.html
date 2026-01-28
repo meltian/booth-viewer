@@ -21,16 +21,50 @@
         <form method="POST">
             <textarea name="urls" rows="6" placeholder="Boothの検索URLを貼り付けてください&#10;（1行に1つURLを入力）" required style="width: 80%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 1rem; font-size: 16px; resize: vertical;"></textarea>
             <br>
-            <button type="submit">まとめて表示する</button>
+            <button type="submit" onclick="saveToLocalStorage()">まとめて表示する</button>
         </form>
         {% if error %}
         <div class="error">{{ error }}</div>
         {% endif %}
+
         <div class="hint">
             <p>例:</p>
             <p>https://booth.pm/ja/search/VRChat<br>https://booth.pm/ja/search/3Dモデル</p>
             <p>※検索結果ページのURLを改行区切りで入力してください。</p>
         </div>
     </div>
+    <script>
+        // Constants
+        const STORAGE_KEY = 'booth_viewer_last_urls';
+
+        // Load history and potentially auto-submit on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const textarea = document.querySelector('textarea[name="urls"]');
+            const savedUrls = localStorage.getItem(STORAGE_KEY);
+            
+            if (savedUrls) {
+                textarea.value = savedUrls;
+
+                // Check for 'edit' query parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const isEditMode = urlParams.has('edit') || urlParams.get('edit') === '1';
+
+                // If NOT in edit mode and we have content, auto-submit
+                if (!isEditMode && savedUrls.trim().length > 0) {
+                   // Optional: Add visual feedback
+                   document.querySelector('button[type="submit"]').textContent = "自動検索中...";
+                   document.forms[0].submit();
+                }
+            }
+        });
+
+        function saveToLocalStorage() {
+            const textarea = document.querySelector('textarea[name="urls"]');
+            const text = textarea.value.trim();
+            if (text) {
+                localStorage.setItem(STORAGE_KEY, text);
+            }
+        }
+    </script>
 </body>
 </html>
